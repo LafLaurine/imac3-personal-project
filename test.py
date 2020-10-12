@@ -8,6 +8,7 @@ from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import preprocess_input
 from keras.utils import to_categorical
 from numpy import array
+from numpy import argmax
 from keras.models import Model
 from keras.layers import Input
 from keras.layers import Dense
@@ -229,6 +230,41 @@ def max_length(descriptions):
     lines = to_lines(descriptions)
     return max(len(d.split()) for d in lines)
 
+
+def word_for_id(integer, tokenizer):
+    for word, index in tokenizer.word_index.items():
+        if index == integer:
+            return word
+    return None
+
+# generate a description for an image
+
+
+def generate_desc(model, tokenizer, photo, max_length):
+    # seed the generation process
+    in_text = 'startseq'
+    # iterate over the whole length of the sequence
+    for i in range(max_length):
+        # integer encode input sequence
+        sequence = tokenizer.texts_to_sequences([in_text])[0]
+        # pad input
+        sequence = pad_sequences([sequence], maxlen=max_length)
+        # predict next word
+        yhat = model.predict([photo, sequence], verbose=0)
+        # convert probability to integer
+        yhat = argmax(yhat)
+        # map integer to word
+        word = word_for_id(yhat, tokenizer)
+        # stop if we cannot map the word
+        if word is None:
+            break
+        # append as input for generating the next word
+        in_text += ' ' + word
+        # stop if we predict the end of the sequence
+        if word == 'endseq':
+            break
+    return in_text
+
 # create sequences of images, input sequences and output words for an image
 
 
@@ -278,6 +314,19 @@ def define_model(vocab_size, max_length):
     return model
 
 
+# evaluate the skill of the model
+def evaluate_model(model, descriptions, photos, tokenizer, max_length):
+    actual, predicted = list(), list()
+    # step over the whole set
+    for key, desc_list in descriptions.items():
+        # generate description
+        yhat = generate_desc(model, tokenizer, photos[key], max_length)
+        # store actual and predicted
+        references = [d.split() for d in desc_list]
+        actual.append(references)
+        predicted.append(yhat.split())
+
+
 # load training dataset (6K)
 filename = 'dataset/Flickr_8k.trainImages.txt'
 train = load_set(filename)
@@ -307,9 +356,14 @@ X1train, X2train, ytrain = create_sequences(
 # define the model
 model = define_model(vocab_size, max_length)
 # define checkpoint callback
+test = load_set(filename)
 filepath = 'model-ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
 checkpoint = ModelCheckpoint(
     filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 # fit model
 model.fit([X1train, X2train], ytrain, epochs=5, verbose=2, callbacks=[
           checkpoint], validation_data=([X1train, X2train], ytrain))
+
+test_descriptions = load_clean_descriptions('descriptions.txt', test)
+test_features = load_photo_features('features.pkl', test)
+evaluate_model(model, test_descriptions, test_features, tokenizer, max_length)
