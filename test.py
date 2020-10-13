@@ -1,4 +1,5 @@
 from os import listdir
+from pickle import load
 from pickle import dump
 from keras.applications.vgg16 import VGG16
 from keras.preprocessing.image import load_img
@@ -18,7 +19,6 @@ from keras.layers import Dropout
 from keras.layers.merge import add
 from keras.callbacks import ModelCheckpoint
 import string
-from pickle import load
 
 # extract features from each photo in the directory
 
@@ -290,8 +290,11 @@ def create_sequences(tokenizer, max_length, descriptions, photos, vocab_size):
                 y.append(out_seq)
     return array(X1), array(X2), array(y)
 
+# covert a dictionary of clean descriptions to a list of descriptions
 
 # define the captioning model
+
+
 def define_model(vocab_size, max_length):
     # feature extractor model
     inputs1 = Input(shape=(4096,))
@@ -361,9 +364,15 @@ filepath = 'model-ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
 checkpoint = ModelCheckpoint(
     filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 # fit model
-model.fit([X1train, X2train], ytrain, epochs=5, verbose=2, callbacks=[
+model.fit([X1train, X2train], ytrain, epochs=1, verbose=2, callbacks=[
           checkpoint], validation_data=([X1train, X2train], ytrain))
 
 test_descriptions = load_clean_descriptions('descriptions.txt', test)
 test_features = load_photo_features('features.pkl', test)
 evaluate_model(model, test_descriptions, test_features, tokenizer, max_length)
+train = load_set(filename)
+train_descriptions = load_clean_descriptions('descriptions.txt', train)
+# prepare tokenizer
+tokenizer = create_tokenizer(train_descriptions)
+# save the tokenizer
+dump(tokenizer, open('tokenizer.pkl', 'wb'))
