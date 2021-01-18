@@ -174,20 +174,20 @@ def evaluate_model(model, descriptions, photos, tokenizer, max_length):
         predicted.append(yhat.split())
 
 
-# load training dataset (6K)
-filename = 'dataset/Flickr_8k.trainImages.txt'
+# load training dataset
+filename = 'dataset/trainImage.txt'
 train = load_set(filename)
 print('Dataset: %d' % len(train))
 # descriptions
-train_descriptions = load_clean_descriptions('descriptions.txt', train)
+train_descriptions = load_clean_descriptions('description/descriptions.txt', train)
 print('Descriptions: train=%d' % len(train_descriptions))
 # photo features
-train_features = load_photo_features('features.pkl', train)
+train_features = load_photo_features('Pickle/features.pkl', train)
 print('Photos: train=%d' % len(train_features))
 # prepare tokenizer
 tokenizer = create_tokenizer(train_descriptions)
 # save the tokenizer
-dump(tokenizer, open('tokenizer.pkl', 'wb'))
+dump(tokenizer, open('Pickle/tokenizer.pkl', 'wb'))
 
 vocab_size = len(tokenizer.word_index) + 1
 print('Vocabulary Size: %d' % vocab_size)
@@ -213,5 +213,3 @@ for i in range(epochs):
 # load the model
 filename = 'model-ep001-loss4.712-val_loss3.999.h5'
 model = load_model(filename)
-# evaluate model
-evaluate_model(model, test_descriptions, test_features, tokenizer, max_length)

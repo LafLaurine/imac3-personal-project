@@ -3,7 +3,7 @@ import generate_desc
 from pickle import load
 from keras.models import load_model
 
-tokenizer = load(open('tokenizer.pkl', 'rb'))
+tokenizer = load(open('Pickle/tokenizer.pkl', 'rb'))
 # pre-define the max sequence length (from training)
 max_length = 34
 # load the model
