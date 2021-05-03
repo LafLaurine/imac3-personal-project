@@ -24,7 +24,7 @@ import prepare_text_data
 import generate_desc
 
 
-# data generator, intended to be used in a call to model.fit_generator()
+# data generator, used in a call to model.fit_generator()
 def data_generator(descriptions, photos, tokenizer, max_length, vocab_size):
     # loop for ever over images
     while 1:
@@ -36,8 +36,6 @@ def data_generator(descriptions, photos, tokenizer, max_length, vocab_size):
             yield [in_img, in_seq], out_word
 
 # load a pre-defined list of photo identifiers
-
-
 def load_set(filename):
     doc = prepare_text_data.load_doc(filename)
     dataset = list()
@@ -52,8 +50,6 @@ def load_set(filename):
     return set(dataset)
 
 # load clean descriptions into memory
-
-
 def load_clean_descriptions(filename, dataset):
     # load document
     doc = prepare_text_data.load_doc(filename)
@@ -75,8 +71,6 @@ def load_clean_descriptions(filename, dataset):
     return descriptions
 
 # load photo features
-
-
 def load_photo_features(filename, dataset):
     # load all features
     all_features = load(open(filename, 'rb'))
@@ -86,8 +80,6 @@ def load_photo_features(filename, dataset):
 
 
 # convert a dictionary of clean descriptions to a list of descriptions
-
-
 def to_lines(descriptions):
     all_desc = list()
     for key in descriptions.keys():
@@ -95,8 +87,6 @@ def to_lines(descriptions):
     return all_desc
 
 # fit a tokenizer given caption descriptions
-
-
 def create_tokenizer(descriptions):
     lines = to_lines(descriptions)
     tokenizer = Tokenizer()
@@ -104,14 +94,9 @@ def create_tokenizer(descriptions):
     return tokenizer
 
 # calculate the length of the description with the most words
-
-
 def max_length(descriptions):
     lines = to_lines(descriptions)
     return max(len(d.split()) for d in lines)
-
-# create sequences of images, input sequences and output words for an image
-
 
 # create sequences of images, input sequences and output words for an image
 def create_sequences(tokenizer, max_length, desc_list, photo, vocab_size):
@@ -135,8 +120,6 @@ def create_sequences(tokenizer, max_length, desc_list, photo, vocab_size):
     return array(X1), array(X2), array(y)
 
 # define the captioning model
-
-
 def define_model(vocab_size, max_length):
     # feature extractor model
     inputs1 = Input(shape=(4096,))
@@ -159,8 +142,6 @@ def define_model(vocab_size, max_length):
     return model
 
 # evaluate the skill of the model
-
-
 def evaluate_model(model, descriptions, photos, tokenizer, max_length):
     actual, predicted = list(), list()
     # step over the whole set

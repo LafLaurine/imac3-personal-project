@@ -1,8 +1,6 @@
 import string
 
 # load doc into memory
-
-
 def load_doc(filename):
     # open the file as read only
     file = open(filename, 'r')
@@ -13,8 +11,6 @@ def load_doc(filename):
     return text
 
 # extract descriptions for images
-
-
 def load_descriptions(doc):
     mapping = dict()
     # process lines
@@ -57,8 +53,6 @@ def clean_descriptions(descriptions):
             desc_list[i] = ' '.join(desc)
 
 # convert the loaded descriptions into a vocabulary of words
-
-
 def to_vocabulary(descriptions):
     # build a list of all description strings
     all_desc = set()
@@ -67,8 +61,6 @@ def to_vocabulary(descriptions):
     return all_desc
 
 # save descriptions to file, one per line
-
-
 def save_descriptions(descriptions, filename):
     lines = list()
     for key, desc_list in descriptions.items():

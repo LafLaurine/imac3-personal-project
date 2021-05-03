@@ -2,8 +2,6 @@ from numpy import argmax
 from keras.preprocessing.sequence import pad_sequences
 
 # map an integer to a word
-
-
 def word_for_id(integer, tokenizer):
     for word, index in tokenizer.word_index.items():
         if index == integer:
@@ -11,8 +9,6 @@ def word_for_id(integer, tokenizer):
     return None
 
 # generate a description for an image
-
-
 def generate_desc(model, tokenizer, photo, max_length):
     # seed the generation process
     in_text = 'startseq'

@@ -10,8 +10,6 @@ from keras.applications.vgg16 import preprocess_input
 from keras.models import Model
 
 # extract features from each photo in the directory
-
-
 def extract_features(directory):
     # load the model
     model = VGG16()
