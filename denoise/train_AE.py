@@ -1,88 +1,83 @@
-# set the matplotlib backend so figures can be saved in the background
-import matplotlib
-matplotlib.use("Agg")
-
-# import the necessary packages
-from AE import ConvAutoencoder
-from keras.optimizers import Adam
-from keras.datasets import mnist
-import matplotlib.pyplot as plt
 import numpy as np
-import argparse
+import matplotlib.pyplot as plt
+
+import os
 import cv2
+from keras.preprocessing.image import img_to_array
+from sklearn.model_selection import train_test_split
+from AE import define_model
+from tqdm import tqdm
 
-# construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-s", "--samples", type=int, default=8,
-	help="# number of samples to visualize when decoding")
-ap.add_argument("-o", "--output", type=str, default="output.png",
-	help="path to output visualization file")
-ap.add_argument("-p", "--plot", type=str, default="plot.png",
-	help="path to output plot file")
-args = vars(ap.parse_args())
+SIZE = 520
 
-# initialize the number of epochs to train for and batch size
-epochs = 10
-batch = 32
-# load the MNIST dataset
-print("[INFO] loading MNIST dataset...")
-((trainX, _), (testX, _)) = mnist.load_data()
-# add a channel dimension to every image in the dataset, then scale
-# the pixel intensities to the range [0, 1]
-trainX = np.expand_dims(trainX, axis=-1)
-testX = np.expand_dims(testX, axis=-1)
-trainX = trainX.astype("float32") / 255.0
-testX = testX.astype("float32") / 255.0
+print("[INFO] Loading dataset...")
+noisy_data=[]
+path1 = '../dataset/FlickerNoisyImages/'
+files=os.listdir(path1)
+for i in tqdm(files):
+    img=cv2.imread(path1+'/'+i,0)   #Change 0 to 1 for color images
+    img=cv2.resize(img,(SIZE, SIZE))
+    noisy_data.append(img_to_array(img))
 
-# sample noise from a random normal distribution centered at 0.5 (since
-# our images lie in the range [0, 1]) and a standard deviation of 0.5
-trainNoise = np.random.normal(loc=0.5, scale=0.5, size=trainX.shape)
-testNoise = np.random.normal(loc=0.5, scale=0.5, size=testX.shape)
-trainXNoisy = np.clip(trainX + trainNoise, 0, 1)
-testXNoisy = np.clip(testX + testNoise, 0, 1)
+clean_data=[]
+path2 = '../dataset/FlickerImages/'
+files=os.listdir(path2)
+for i in tqdm(files[:500]):
+    img=cv2.imread(path2+'/'+i,0)  #Change 0 to 1 for color images
+    img=cv2.resize(img,(SIZE, SIZE))
+    clean_data.append(img_to_array(img))
 
-# construct our convolutional autoencoder
-print("[INFO] building autoencoder...")
-(encoder, decoder, autoencoder) = ConvAutoencoder.build(28, 28, 1)
-opt = Adam(lr=1e-3)
-autoencoder.compile(loss="mse", optimizer=opt)
-# train the convolutional autoencoder
-H = autoencoder.fit(
-	trainXNoisy, trainX,
-	validation_data=(testXNoisy, testX),
-	epochs=epochs,
-	batch_size=batch)
+noisy_train = np.reshape(noisy_data, (len(noisy_data), SIZE, SIZE, 1))
+noisy_train = noisy_train.astype('float32') / 255.
 
-# construct a plot that plots and saves the training history
-N = np.arange(0, epochs)
-plt.style.use("ggplot")
-plt.figure()
-plt.plot(N, H.history["loss"], label="train_loss")
-plt.plot(N, H.history["val_loss"], label="val_loss")
-plt.title("Training Loss and Accuracy")
-plt.xlabel("Epoch #")
-plt.ylabel("Loss/Accuracy")
-plt.legend(loc="lower left")
-plt.savefig(args["plot"])
+clean_train = np.reshape(clean_data, (len(clean_data), SIZE, SIZE, 1))
+clean_train = clean_train.astype('float32') / 255.
 
-# use the convolutional autoencoder to make predictions on the
-# testing images, then initialize our list of output images
-print("[INFO] making predictions...")
-decoded = autoencoder.predict(testXNoisy)
-outputs = None
-# loop over our number of output samples
-for i in range(0, args["samples"]):
-	# grab the original image and reconstructed image
-	original = (testXNoisy[i] * 255).astype("uint8")
-	recon = (decoded[i] * 255).astype("uint8")
-	# stack the original and reconstructed image side-by-side
-	output = np.hstack([original, recon])
-	# if the outputs array is empty, initialize it as the current
-	# side-by-side image display
-	if outputs is None:
-		outputs = output
-	# otherwise, vertically stack the outputs
-	else:
-		outputs = np.vstack([outputs, output])
-# save the outputs image to disk
-cv2.imwrite(args["output"], outputs)
+#Displaying images with noise
+'''
+plt.figure(figsize=(10, 2))
+for i in range(1,4):
+    ax = plt.subplot(1, 4, i)
+    plt.imshow(noisy_train[i].reshape(SIZE, SIZE), cmap="binary")
+plt.show()
+'''
+
+#Displaying clean images
+'''
+plt.figure(figsize=(10, 2))
+for i in range(1,4):
+    ax = plt.subplot(1, 4, i)
+    plt.imshow(clean_train[i].reshape(SIZE, SIZE), cmap="binary")
+plt.show()
+'''
+
+model = define_model(SIZE)
+
+x_train, x_test, y_train, y_test = train_test_split(noisy_train, clean_train, 
+                                                    test_size = 0.20, random_state = 0)
+
+
+model.fit(x_train, y_train, epochs=10, batch_size=32, shuffle=True, verbose = 1,
+          validation_split = 0.1)
+
+
+print("Test_Accuracy: {:.2f}%".format(model.evaluate(np.array(x_test), np.array(y_test))[1]*100))
+model.save('denoising_autoencoder.model')
+no_noise_img = model.predict(x_test)
+
+plt.imsave('../dataset/FlickerDenoisedImages/denoised_image'+i+'.jpg', no_noise_img[i].reshape(SIZE,SIZE))
+
+"""
+plt.figure(figsize=(40, 4))
+for i in range(10):
+    # display original
+    ax = plt.subplot(3, 20, i + 1)
+    plt.imshow(y_test[i].reshape(SIZE,SIZE), cmap="gray")
+    
+    # display reconstructed (after noise removed) image
+    ax = plt.subplot(3, 20, 40 +i+ 1)
+    plt.imshow(no_noise_img[i].reshape(SIZE,SIZE), cmap="gray")
+
+plt.show()
+
+"""
