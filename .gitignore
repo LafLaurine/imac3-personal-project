@@ -52,3 +52,5 @@ venv.bak/
 dataset/*
 denoise/DPIR-master/model_zoo/*
 denoise/DPIR-master/kernels/*
+denoise/DPIR-master/noise/*
+denoise/DPIR-master/results/*

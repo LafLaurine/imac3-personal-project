@@ -2,8 +2,6 @@ import os.path
 import logging
 
 import numpy as np
-from collections import OrderedDict
-
 import torch
 
 from utils import utils_logger
@@ -78,15 +76,12 @@ def main():
     number_parameters = sum(map(lambda x: x.numel(), model.parameters()))
     logger.info('Params number: {}'.format(number_parameters))
 
-    test_results = OrderedDict()
-    test_results['psnr'] = []
-    test_results['ssim'] = []
-
-    logger.info('model_name:{}, model sigma:{}, image sigma:{}'.format(model_name, noise_level_img, noise_level_model))
+    logger.info('model_name:{}, model sigma:{}'.format(model_name, noise_level_img))
     logger.info(L_path)
     L_paths = util.get_image_paths(L_path)
+    L_paths_noisy = util.get_image_paths(L_path_noisy)
 
-    for idx, img in enumerate(L_paths):
+    for idx, img in enumerate(L_paths_noisy):
 
         # ------------------------------------
         # (1) img_L
@@ -94,17 +89,18 @@ def main():
 
         img_name, ext = os.path.splitext(os.path.basename(img))
         # logger.info('{:->4d}--> {:>10s}'.format(idx+1, img_name+ext))
-        img_H = util.imread_uint(img, n_channels=n_channels)
-        img_L = util.uint2single(img_H)
+        img_L = util.imread_uint(img, n_channels=n_channels)
+        img_L = util.uint2single(img_L)
 
         # Add noise without clipping
-        np.random.seed(seed=0)  # for reproducibility
-        img_L += np.random.normal(0, noise_level_img/255., img_L.shape)
+        #np.random.seed(seed=0)  # for reproducibility
+        #img_L += np.random.normal(0, noise_level_img/255., img_L.shape)
 
         img_L = util.single2tensor4(img_L)
         img_L = torch.cat((img_L, torch.FloatTensor([noise_level_model/255.]).repeat(1, 1, img_L.shape[2], img_L.shape[3])), dim=1)
         img_L = img_L.to(device)
-        util.imsave(util.single2uint(img_L), os.path.join(L_path_noisy, img_name+ext))
+
+        #util.imsave(util.single2uint(img_L), os.path.join(L_path_noisy, img_name+ext))
 
         # ------------------------------------
         # (2) img_E
@@ -124,10 +120,6 @@ def main():
         # ------------------------------------
 
         util.imsave(img_E, os.path.join(E_path, img_name+ext))
-
-    ave_psnr = sum(test_results['psnr']) / len(test_results['psnr'])
-    ave_ssim = sum(test_results['ssim']) / len(test_results['ssim'])
-    logger.info('Average PSNR/SSIM(RGB) - {} - PSNR: {:.2f} dB; SSIM: {:.4f}'.format(result_name, ave_psnr, ave_ssim))
 
 if __name__ == '__main__':
     main()
