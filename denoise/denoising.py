@@ -33,15 +33,14 @@ def main():
     noise_level_img = 15                 # set AWGN noise level for noisy image
     noise_level_model = noise_level_img  # set noise level for model
     model_name = 'drunet_color'          # set denoiser model, 'drunet_gray' | 'drunet_color'
-    testset_name = 'bsd68'               # set test set,  'bsd68' | 'cbsd68' | 'set12'
+    testset_name = 'Flicker'               # set test set,  'bsd68' | 'cbsd68' | 'set12'
     x8 = False                           # default: False, x8 to boost performance
 
-    n_channels = 3                       # fixed
-    model_pool = 'model_zoo'             # fixed
-    testsets = 'testsets'                # fixed
-    noise_set = 'noise'                  # fixed
-    results = 'results'                  # fixed
-    task_current = 'dn'                  # 'dn' for denoising
+    n_channels = 3                       
+    model_pool = 'model'             
+    noise_set = 'noise'                  
+    results = '../dataset/FlickerDenoisedImages' 
+    task_current = 'dn'
     result_name = testset_name + '_' + task_current + '_' + model_name
 
     model_path = os.path.join(model_pool, model_name+'.pth')
@@ -49,10 +48,9 @@ def main():
     torch.cuda.empty_cache()
 
     # ----------------------------------------
-    # L_path, E_path, H_path
+    # L_path_noisy, E_path, H_path
     # ----------------------------------------
 
-    L_path = os.path.join(testsets, testset_name) # L_path, for Low-quality images
     L_path_noisy = os.path.join(noise_set, result_name) # L_path, for noisy images
     E_path = os.path.join(results, result_name)   # E_path, for Estimated images
     util.mkdir(E_path)
@@ -77,8 +75,7 @@ def main():
     logger.info('Params number: {}'.format(number_parameters))
 
     logger.info('model_name:{}, model sigma:{}'.format(model_name, noise_level_img))
-    logger.info(L_path)
-    L_paths = util.get_image_paths(L_path)
+    logger.info(L_path_noisy)
     L_paths_noisy = util.get_image_paths(L_path_noisy)
 
     for idx, img in enumerate(L_paths_noisy):
