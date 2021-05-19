@@ -53,31 +53,13 @@ plt.show()
 
 model = define_model(SIZE)
 
-x_train, x_test, y_train, y_test = train_test_split(noisy_train, clean_train, 
-                                                    test_size = 0.20, random_state = 0)
+x_train, x_test, y_train, y_test = train_test_split(noisy_train, clean_train, test_size = 0.20, random_state = 0)
 
-
-model.fit(x_train, y_train, epochs=10, batch_size=32, shuffle=True, verbose = 1,
-          validation_split = 0.1)
-
+model.fit(x_train, y_train, epochs=10, batch_size=16, shuffle=True, verbose = 1, validation_split = 0.1)
 
 print("Test_Accuracy: {:.2f}%".format(model.evaluate(np.array(x_test), np.array(y_test))[1]*100))
 model.save('denoising_autoencoder.model')
 no_noise_img = model.predict(x_test)
 
-plt.imsave('../dataset/FlickerDenoisedImages/denoised_image'+i+'.jpg', no_noise_img[i].reshape(SIZE,SIZE))
-
-"""
-plt.figure(figsize=(40, 4))
 for i in range(10):
-    # display original
-    ax = plt.subplot(3, 20, i + 1)
-    plt.imshow(y_test[i].reshape(SIZE,SIZE), cmap="gray")
-    
-    # display reconstructed (after noise removed) image
-    ax = plt.subplot(3, 20, 40 +i+ 1)
-    plt.imshow(no_noise_img[i].reshape(SIZE,SIZE), cmap="gray")
-
-plt.show()
-
-"""
+    plt.imsave('../dataset/FlickerDenoisedImages/denoised_image'+str(i)+'.jpg',no_noise_img[i].reshape(SIZE,SIZE),cmap="binary")

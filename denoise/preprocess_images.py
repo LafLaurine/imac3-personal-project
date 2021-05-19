@@ -1,12 +1,36 @@
 import os
 import cv2
 import numpy as np
- 
 
+def mat2gray(img):
+    A = np.double(img)
+    out = np.zeros(A.shape, np.double)
+    normalized = cv2.normalize(A, out, 1.0, 0.0, cv2.NORM_MINMAX)
+    return out
+ 
+ #Add noise to the image
+def random_noise(image, mode='gaussian', seed=None, clip=True, **kwargs):
+    image = mat2gray(image)
+    mode = mode.lower()
+    if image.min() < 0:
+        low_clip = -1
+    else:
+        low_clip = 0
+    if seed is not None:
+        np.random.seed(seed=seed)
+        
+    if mode == 'gaussian':
+        noise = np.random.normal(kwargs['mean'], kwargs['var'] ** 0.5,
+                                 image.shape)        
+        out = image  + noise
+    if clip:        
+        out = np.clip(out, low_clip, 1.0)
+    return out 
+  
 for root, dirs, files in os.walk('../dataset/FlickerImages'):
-  for file in files[:500]:
-    img = cv2.imread(root + "/" + file)
-    gauss = np.random.normal(0,1,img.size)
-    gauss = gauss.reshape(img.shape[0],img.shape[1],img.shape[2]).astype('uint8')
-    noise = img + img * gauss
-    cv2.imwrite("../dataset/FlickerNoisyImages/"+file,noise)
+    files.sort()
+    for file in files[:500]:
+        img = cv2.imread(root + "/" + file)
+        noisy = random_noise(img,'gaussian', mean=0.1,var=0.01)
+        noisy = np.uint8(noisy*255)
+        cv2.imwrite("../dataset/FlickerNoisyImages/"+file,noisy)
