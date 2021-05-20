@@ -23,7 +23,6 @@ from keras.models import load_model
 import prepare_text_data
 import generate_desc
 
-
 # data generator, used in a call to model.fit_generator()
 def data_generator(descriptions, photos, tokenizer, max_length, vocab_size):
     # loop for ever over images
@@ -77,7 +76,6 @@ def load_photo_features(filename, dataset):
     # filter features
     features = {k: all_features[k] for k in dataset}
     return features
-
 
 # convert a dictionary of clean descriptions to a list of descriptions
 def to_lines(descriptions):
@@ -156,19 +154,19 @@ def evaluate_model(model, descriptions, photos, tokenizer, max_length):
 
 
 # load training dataset
-filename = 'dataset/trainImage.txt'
+filename = '../dataset/trainImage.txt'
 train = load_set(filename)
 print('Dataset: %d' % len(train))
 # descriptions
-train_descriptions = load_clean_descriptions('description/descriptions.txt', train)
+train_descriptions = load_clean_descriptions('../description/descriptions.txt', train)
 print('Descriptions: train=%d' % len(train_descriptions))
 # photo features
-train_features = load_photo_features('Pickle/features.pkl', train)
+train_features = load_photo_features('features.pkl', train)
 print('Photos: train=%d' % len(train_features))
 # prepare tokenizer
 tokenizer = create_tokenizer(train_descriptions)
 # save the tokenizer
-dump(tokenizer, open('Pickle/tokenizer.pkl', 'wb'))
+dump(tokenizer, open('tokenizer.pkl', 'wb'))
 
 vocab_size = len(tokenizer.word_index) + 1
 print('Vocabulary Size: %d' % vocab_size)

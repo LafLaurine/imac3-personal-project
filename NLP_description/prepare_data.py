@@ -39,7 +39,6 @@ def extract_features(directory):
         print('>%s' % name)
     return features
 
-
 def extract_features_filename(filename):
     # load the model
     model = VGG16()
@@ -57,10 +56,9 @@ def extract_features_filename(filename):
     feature = model.predict(image, verbose=0)
     return feature
 
-
 # extract features from all images
-directory = 'dataset/FlickerImages'
+directory = '../dataset/FlickerImages'
 features = extract_features(directory)
 print('Extracted Features: %d' % len(features))
 # save to file
-dump(features, open('Pickle/features.pkl', 'wb'))
+dump(features, open('features.pkl', 'wb'))

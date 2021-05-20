@@ -32,7 +32,6 @@ def load_descriptions(doc):
         mapping[image_id].append(image_desc)
     return mapping
 
-
 def clean_descriptions(descriptions):
     # prepare translation table for removing punctuation
     table = str.maketrans('', '', string.punctuation)
@@ -72,7 +71,7 @@ def save_descriptions(descriptions, filename):
     file.close()
 
 
-filename = 'dataset/captions.txt'
+filename = '../dataset/captions.txt'
 # load descriptions
 doc = load_doc(filename)
 # parse descriptions
@@ -84,4 +83,4 @@ clean_descriptions(descriptions)
 vocabulary = to_vocabulary(descriptions)
 print('Vocabulary Size: %d' % len(vocabulary))
 # save to file
-save_descriptions(descriptions, 'description/descriptions.txt')
+save_descriptions(descriptions, '../description/descriptions.txt')
