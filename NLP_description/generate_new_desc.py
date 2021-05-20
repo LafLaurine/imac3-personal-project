@@ -9,7 +9,7 @@ max_length = 34
 # load the model
 model = load_model('model-ep001-loss4.712-val_loss3.999.h5')
 # load and prepare the photograph
-photo = prepare_data.extract_features_filename('example2.jpg')
+photo = prepare_data.extract_features_filename('../dataset/FlickerNoisyImages/10815824_2997e03d76.jpg')
 # generate description
 description = generate_desc.generate_desc(model, tokenizer, photo, max_length)
 print(description)

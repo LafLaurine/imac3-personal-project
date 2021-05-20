@@ -7,7 +7,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import preprocess_input
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 from numpy import array
 from numpy import argmax
 from keras.models import Model
@@ -152,7 +152,6 @@ def evaluate_model(model, descriptions, photos, tokenizer, max_length):
         actual.append(references)
         predicted.append(yhat.split())
 
-
 # load training dataset
 filename = '../dataset/trainImage.txt'
 train = load_set(filename)
@@ -188,7 +187,3 @@ for i in range(epochs):
               steps_per_epoch=steps, verbose=1)
     # save model
     model.save('model_' + str(i) + '.h5')
-
-# load the model
-filename = 'model-ep001-loss4.712-val_loss3.999.h5'
-model = load_model(filename)

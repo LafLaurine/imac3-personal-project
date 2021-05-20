@@ -70,7 +70,6 @@ def save_descriptions(descriptions, filename):
     file.write(data)
     file.close()
 
-
 filename = '../dataset/captions.txt'
 # load descriptions
 doc = load_doc(filename)

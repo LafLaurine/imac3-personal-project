@@ -14,6 +14,9 @@ Get dataset : `wget https://drive.google.com/uc?export=download&id=1K5U0mu3Iunlx
 
 ## Describing an image
 
-First need to get dataset files with `get_dataset_files.py`
-Then we need to prepare the photo data with `prepare_data.py`
-After that it's the turn of the text data to be prepared with `prepare_text_data.py`  
+You'll find every file in NLP_description/
+
+First need to get dataset files with `get_dataset_files.py` \\
+Then we need to prepare the photo data with `prepare_data.py` \\
+After that it's the turn of the text data to be prepared with `prepare_text_data.py` \\
+Train the model with `train_model.py`
