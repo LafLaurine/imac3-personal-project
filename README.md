@@ -12,11 +12,14 @@ Get dataset : `wget https://drive.google.com/uc?export=download&id=1K5U0mu3Iunlx
 
 ## Denoising
 
+You'll find every file in the directory denoise/
+
 ## Describing an image
 
-You'll find every file in NLP_description/
+You'll find every file in the directory NLP_description/
 
 First need to get dataset files with `get_dataset_files.py` \\
 Then we need to prepare the photo data with `prepare_data.py` \\
 After that it's the turn of the text data to be prepared with `prepare_text_data.py` \\
-Train the model with `train_model.py`
+Train the model with `train_model.py` \\
+Once the model is trained, you can use it to generate a new description of an image by launching `generate_new_desc.py`
