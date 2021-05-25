@@ -32,8 +32,8 @@ def main():
 
     noise_level_img = 15                 # set AWGN noise level for noisy image
     noise_level_model = noise_level_img  # set noise level for model
-    model_name = 'drunet_color'          # set denoiser model, 'drunet_gray' | 'drunet_color'
-    testset_name = 'Flicker'               # set test set,  'bsd68' | 'cbsd68' | 'set12'
+    model_name = 'drunet_color'          # set denoiser model
+    testset_name = 'Flicker'             # set test set
     x8 = False                           # default: False, x8 to boost performance
 
     n_channels = 3                       
@@ -85,19 +85,12 @@ def main():
         # ------------------------------------
 
         img_name, ext = os.path.splitext(os.path.basename(img))
-        # logger.info('{:->4d}--> {:>10s}'.format(idx+1, img_name+ext))
+        
         img_L = util.imread_uint(img, n_channels=n_channels)
         img_L = util.uint2single(img_L)
-
-        # Add noise without clipping
-        #np.random.seed(seed=0)  # for reproducibility
-        #img_L += np.random.normal(0, noise_level_img/255., img_L.shape)
-
         img_L = util.single2tensor4(img_L)
         img_L = torch.cat((img_L, torch.FloatTensor([noise_level_model/255.]).repeat(1, 1, img_L.shape[2], img_L.shape[3])), dim=1)
         img_L = img_L.to(device)
-
-        #util.imsave(util.single2uint(img_L), os.path.join(L_path_noisy, img_name+ext))
 
         # ------------------------------------
         # (2) img_E

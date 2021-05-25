@@ -6,8 +6,8 @@ from skimage.metrics import structural_similarity
 def calc_psnr(img1, img2):
     return 10. * torch.log10(1. / torch.mean((img1 - img2) ** 2))
 
-X = cv2.imread("../dataset/FlickerImages/667626_18933d713e.jpg")
-Y = cv2.imread("../dataset/FlickerNoisyImages/667626_18933d713e.jpg")
+X = cv2.imread("../dataset/FlickerImages/10815824_2997e03d76.jpg")
+Y = cv2.imread("../dataset/FlickerDenoisedImages/Flicker_dn_drunet_color/10815824_2997e03d76.jpg")
 
 img1 = torch.from_numpy(np.rollaxis(X, 2)).float().unsqueeze(0)/255.0
 img2 = torch.from_numpy(np.rollaxis(Y, 2)).float().unsqueeze(0)/255.0
