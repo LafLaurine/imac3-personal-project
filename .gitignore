@@ -54,3 +54,5 @@ denoise/model/*
 denoise/kernels/*
 denoise/noise/*
 denoise/results/*
+*.h5
+*.pkl

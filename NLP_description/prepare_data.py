@@ -56,9 +56,10 @@ def extract_features_filename(filename):
     feature = model.predict(image, verbose=0)
     return feature
 
-# extract features from all images
-directory = '../dataset/FlickerImages'
-features = extract_features(directory)
-print('Extracted Features: %d' % len(features))
-# save to file
-dump(features, open('features.pkl', 'wb'))
+def main():
+    # extract features from all images
+    directory = '../dataset/FlickerImages'
+    features = extract_features(directory)
+    print('Extracted Features: %d' % len(features))
+    # save to file
+    dump(features, open('features.pkl', 'wb'))

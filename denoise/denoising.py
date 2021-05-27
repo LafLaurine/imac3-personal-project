@@ -38,7 +38,7 @@ def main():
 
     n_channels = 3                       
     model_pool = 'model'             
-    noise_set = 'noise'                  
+    noise_set = '../dataset/FlickerNoisyImages'                  
     results = '../dataset/FlickerDenoisedImages' 
     task_current = 'dn'
     result_name = testset_name + '_' + task_current + '_' + model_name
@@ -51,7 +51,7 @@ def main():
     # L_path_noisy, E_path, H_path
     # ----------------------------------------
 
-    L_path_noisy = os.path.join(noise_set, result_name) # L_path, for noisy images
+    L_path_noisy = noise_set
     E_path = os.path.join(results, result_name)   # E_path, for Estimated images
     util.mkdir(E_path)
 

@@ -153,7 +153,7 @@ def evaluate_model(model, descriptions, photos, tokenizer, max_length):
         predicted.append(yhat.split())
 
 # load training dataset
-filename = '../dataset/trainImage.txt'
+filename = '../dataset/Flickr_8k.trainImages.txt'
 train = load_set(filename)
 print('Dataset: %d' % len(train))
 # descriptions
