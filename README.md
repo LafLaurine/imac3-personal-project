@@ -31,10 +31,12 @@ You must put is in the directory *./dataset*
 ## Models
 
 If you want to get trained model, run the following commands : \
-`wget https://drive.google.com/uc?export=download&id=1UnjL6HGLsxGgaRYbLoPYq1RI0xh8VixD` \
+`wget https://drive.google.com/uc?export=download&id=1UnjL6HGLsxGgaRYbLoPYq1RI0xh8VixD` 
+
 It will give you the trained model for the NLP image descriptor, so you must put it in *./NLP_description*
 
-`wget https://drive.google.com/uc?export=download&id=1yBar0ywvinwf_ZfjtntxYNqmLw-cxzzu` \
+`wget https://drive.google.com/uc?export=download&id=1yBar0ywvinwf_ZfjtntxYNqmLw-cxzzu` 
+
 It will give you the trained model for the denoising, so you must put it in *./denoise/model*
 
 ## Denoising
@@ -57,14 +59,13 @@ If you want to use the descriptor directly, skip the preprocessing and the train
 
 First, you need to get dataset files with `get_dataset_files.py` \
 Then you need to prepare the photo data with `prepare_data.py` \
-After that it's the turn of the text data to be prepared with `prepare_text_data.py` \
+After that it's the turn of the text data to be prepared with `prepare_text_data.py` 
 
 ### Train the model
 
 You can train the model with `train_model.py`
 
-If you want to run all in once you can use the bash script : `run_NLP_preprocess.sh`. \ 
-This script run on Windows only !
+If you want to run all in once you can use the bash script : `run_NLP_preprocess.sh`. This script run on Windows only !
 
 ### Use the model
 
