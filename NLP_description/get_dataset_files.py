@@ -3,7 +3,7 @@ from os.path import isfile, join
 
 onlyfiles = [f for f in listdir("../dataset/FlickerImages") if isfile(join("../dataset/FlickerImages", f))]
 
-f = open("../dataset/trainImage.txt","w+")
+f = open("../dataset/trainImages.txt","w+")
 for i in range(int(len(onlyfiles))):
     f.write(onlyfiles[i] + "\n")
 
