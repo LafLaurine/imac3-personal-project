@@ -14,7 +14,6 @@ My goal is to denoise an image using deep learning. After the denoising, NLP tec
 pip install scipy
 pip install tensorflow
 pip install keras
-pip install nltk
 pip install numpy
 pip install scikit-image
 pip install opencv-python
