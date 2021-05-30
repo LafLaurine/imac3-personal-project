@@ -139,19 +139,6 @@ def define_model(vocab_size, max_length):
     print(model.summary())
     return model
 
-# evaluate the skill of the model
-def evaluate_model(model, descriptions, photos, tokenizer, max_length):
-    actual, predicted = list(), list()
-    # step over the whole set
-    for key, desc_list in descriptions.items():
-        # generate description
-        yhat = generate_desc.generate_desc(
-            model, tokenizer, photos[key], max_length)
-        # store actual and predicted
-        references = [d.split() for d in desc_list]
-        actual.append(references)
-        predicted.append(yhat.split())
-
 # load training dataset
 filename = '../dataset/trainImages.txt'
 train = load_set(filename)
