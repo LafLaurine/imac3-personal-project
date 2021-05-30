@@ -10,11 +10,14 @@ My goal is to denoise an image using deep learning. After the denoising, NLP tec
 
 ## Dependencies
 
-```pip install scipy
+```
+pip install scipy
 pip install tensorflow
 pip install keras
 pip install nltk
 pip install numpy
+pip install scikit-image
+pip install opencv-python
 ```
 
 For PyTorch, it is better to follow the installation on their website, as it depends on CUDA and Linux/Windows : [Installing PyTorch](https://pytorch.org/)
