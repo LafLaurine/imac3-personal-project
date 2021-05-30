@@ -1,12 +1,7 @@
-from os import listdir
 from pickle import load
 from pickle import dump
-from keras.applications.vgg16 import VGG16
-from keras.preprocessing.image import load_img
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from keras.preprocessing.image import img_to_array
-from keras.applications.vgg16 import preprocess_input
 from tensorflow.keras.utils import to_categorical
 from numpy import array
 from numpy import argmax
@@ -17,11 +12,8 @@ from keras.layers import LSTM
 from keras.layers import Embedding
 from keras.layers import Dropout
 from keras.layers.merge import add
-from keras.callbacks import ModelCheckpoint
-from keras.models import load_model
 
 import prepare_text_data
-import generate_desc
 
 # data generator, used in a call to model.fit_generator()
 def data_generator(descriptions, photos, tokenizer, max_length, vocab_size):
